@@ -1,0 +1,171 @@
+# Model parameters settings
+name: acoustic_camera_SR_training_exp
+model_type: Acoustic_Camera_SR_Model
+scale: 4
+num_gpu: 0
+manual_seed: 0
+
+# ---User settings for generating LR acoustic camera images for model training--- #
+# USM the ground-truth
+l1_gt_usm: True
+percep_gt_usm: True
+gan_gt_usm: False
+
+# 1-st acoustic camera images degradation process
+resize_prob: [ 0.4, 0.4, 0.2 ]  # up, down, keep
+resize_range: [ 0.15, 1.5 ]
+gaussian_noise_prob_1:   # control gaussian noise
+gaussian_noise_prob_2:   # control gaussian noise
+noise_range: [ 5, 25 ]
+poisson_scale_range: [ 0.05, 3 ] # control poisson noise
+shape_parameter:     # control speckle noise
+scale_parameter:     # control speckle noise
+gray_noise_prob: 0.8
+jpeg_range: [ 20, 75 ]
+
+# 2-nd acoustic camera images degradation process
+second_blur_prob: 0.8
+resize_prob2: [ 0.3, 0.4, 0.3 ]  # up, down, keep
+resize_range2: [ 0.3, 1.2 ]
+gaussian_noise_prob2_1: 0.5  # control gaussian noise
+gaussian_noise_prob2_2: 0.9  # control gaussian noise
+noise_range2: [ 1, 30 ]
+poisson_scale_range2: [ 0.05, 2.5 ] # control poisson noise
+shape_parameter2:     # control speckle noise
+scale_parameter2:     # control speckle noise
+gray_noise_prob2: 0.6
+jpeg_range2: [ 25, 90 ]
+
+gt_size:       ## images size
+queue_size:    ## setting
+
+# dataset and data loader settings
+datasets:
+  train:
+    name:          # acoustic camera images training set
+    type: RealESRGANDataset  # default
+    dataroot_gt:   # acoustic data dir
+    meta_info:     # meta  *.txt file
+    io_backend:
+      type: disk
+
+    blur_kernel_size: 15 # user setting
+    kernel_list: [ 'iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso' ]
+    kernel_prob: [ 0.55, 0.35, 0.12, 0.035, 0.12, 0.025 ]
+    sinc_prob: 0.11  # user setting
+    blur_sigma: [ 0.2, 3 ]  # user setting
+    betag_range: [ 0.5, 4 ] # user setting
+    betap_range: [ 1, 2 ] # user setting
+
+    blur_kernel_size2: 15 # user setting
+    kernel_list2: [ 'iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso' ]
+    kernel_prob2: [ 0.45, 0.25, 0.12, 0.03, 0.12, 0.03 ]
+    sinc_prob2: 0.12 # user setting
+    blur_sigma2: [ 0.2, 1.5 ] # user setting
+    betag_range2: [ 0.5, 4 ] # user setting
+    betap_range2: [ 1, 2 ] # user setting
+
+    final_sinc_prob: 0.85 # user setting
+
+    gt_size:  # acoustic camera images size
+    use_hflip: True
+    use_rot: False
+
+    # data loader
+    use_shuffle: true  # user setting
+    num_worker_per_gpu: 5  # user setting
+    batch_size_per_gpu: 12  # user setting
+    dataset_enlarge_ratio: 1  # user setting
+    prefetch_mode: ~
+
+# network structures
+network_g:
+  type: RRDBNet
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+network_d:
+  type: UNetDiscriminatorSN
+  num_in_ch: 3
+  num_feat: 64
+  skip_connection: True
+
+# path
+path:
+  # use the pre-trained model from open-source or your trained or fine-tuning
+  pretrain_network_g: experiments/pretrained_models/RealESRGAN_x4plus+fine-tuning.pth  # user setting
+  param_key_g: params_ema
+  strict_load_g: true
+  resume_state: ~
+
+# acoustic camera SR model training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4   #user setting
+    weight_decay: 0
+    betas: [ 0.9, 0.99 ]
+  optim_d:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [ 0.9, 0.99 ]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [ 400000 ]
+    gamma: 0.5
+
+  total_iter:   #user setting
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0 #user setting
+    reduction: mean
+  # perceptual loss (content and style losses)
+  perceptual_opt:
+    type: PerceptualLoss
+    layer_weights:
+      # before relu
+      'conv1_2': 0.1
+      'conv2_2': 0.1
+      'conv3_4': 1
+      'conv4_4': 1
+      'conv5_4': 1
+    vgg_type: vgg19
+    use_input_norm: true
+    perceptual_weight: !!float 1.0   #user setting
+    style_weight: 0
+    range_norm: false
+    criterion: l1
+  # gan loss
+  gan_opt:
+    type: GANLoss
+    gan_type: vanilla
+    real_label_val: 1.0
+    fake_label_val: 0.0
+    loss_weight: !!float 1e-1  #user setting
+
+  net_d_iters: 1
+  net_d_init_iters: 0
+
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
