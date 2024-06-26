@@ -1,8 +1,8 @@
 # About the Project
 The acoustic camera is a type of 2D forward-looking sonar (FLS) that can operate in low-visibility underwater environments.
-However, the resolution of acoustic images captured by acoustic cameras is very low, which is a common problem in sonar image processing.
-Different from the previous CNN-based acoustic image super-resolution (SR) reconstruction, this project tested the reconstruction performance based on GAN.
-Ultimately, this project will serve the preprocessing of acoustic camera images together with the denoising project.
+However, the resolution of acoustic_images captured by acoustic cameras is very low, which is a common problem in sonar image processing.
+Different from the previous CNN-based acoustic_image_super-resolution (SR) reconstruction, this project tested the reconstruction performance based on GAN.
+Ultimately, this project will serve the preprocessing of acoustic_camera_images together with the denoising project.
 
 # Prerequisites
 opencv-python=4.8.1
