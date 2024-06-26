@@ -30,10 +30,11 @@ Considering the complexity of acoustic camera image attributes, the model initia
 
 # Usage
 Utilities are defined in python scripts used as modules.
-Unlike optical sensors, acoustic cameras generate grayscale images by emitting sound waves and analyzing the time delay, intensity, and phase difference of the echoes. Therefore, it is necessary to introduce a high-order degradation process, in which the noise and quality loss parts are critical. The training and fine-tuning parameters of the model can be set according to the manual.
+Unlike optical sensors, acoustic cameras generate grayscale images by emitting sound waves and analyzing the time delay, intensity, and phase difference of the echoes. Therefore, it is necessary to introduce a high-order degradation process, in which the noise and quality loss parts are critical. The training and fine-tuning parameters of the model can be set according to the manual.External scripts can be used to perform custom degradation preprocessing on the data before feeding it into the model.
 
 # Future Improvements
 Acoustic camera image association, image denoising, image SR reconstruction and feature matching are the preprocessing steps of our schedule, serving acoustic camera applications such as underwater mosaicking, 3D reconstruction, and SLAM.
+The learning-based acoustic camera image degradation subprocesses (such as acoustic shadow degradation) will be designed specifically and embedded into the pipeline.
 
 # Acknowledgements
 The analysis and processing of acoustic images refer to [aris-file-sdk](https://github.com/SoundMetrics/aris-file-sdk), and the SR reconstruction pipeline is implemented based on [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
