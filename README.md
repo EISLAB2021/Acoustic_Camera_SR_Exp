@@ -25,3 +25,5 @@ torchvision=0.13.1
 
 tqdm=4.66.1
 
+# Installation
+Considering the complexity of acoustic camera image properties, the model initialization and data flow pipeline are based on [Real-ESGAN](https://github.com/xinntao/Real-ESRGAN), please refer to it for initialization.
