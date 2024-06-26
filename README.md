@@ -26,4 +26,12 @@ torchvision=0.13.1
 tqdm=4.66.1
 
 # Installation
-Considering the complexity of acoustic camera image properties, the model initialization and data flow pipeline are based on [Real-ESGAN](https://github.com/xinntao/Real-ESRGAN), please refer to it for initialization.
+Considering the complexity of acoustic camera image properties, the model initialization and data flow pipeline are based on [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN), please refer to it for initialization.
+
+# Usage
+Utilities are defined in python scripts used as modules.
+Unlike optical sensors, acoustic cameras generate grayscale images by emitting sound waves and analyzing the time delay, intensity, and phase difference of the echoes. Therefore, it is necessary to introduce a high-order degradation process, in which the noise and quality loss parts are critical. The training and fine-tuning parameters of the model can be set according to the manual.
+
+# Acknowledgements
+The analysis and processing of acoustic images refer to [aris-file-sdk](https://github.com/SoundMetrics/aris-file-sdk), and the SR reconstruction pipeline is implemented based on [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
+And we borrowed some code from [wgan-gp](https://github.com/EmilienDupont/wgan-gp).
